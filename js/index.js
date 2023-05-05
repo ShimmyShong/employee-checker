@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const sql = require('mysql2');
 
+// this is an object that holds the questions that will be used for inquirer
 questionObj = {
     initQuestion:
     {
@@ -11,7 +12,7 @@ questionObj = {
     },
     addDepartmentChoose: {
         name: 'questionAddDepartment',
-        message: 'What is the name of the repartment?',
+        message: 'What is the name of the department?',
         type: 'input'
     },
     addRoleChoose: [
@@ -29,7 +30,7 @@ questionObj = {
             name: 'questionAddRoleDepartment',
             message: 'Which department does the role belong to?',
             type: 'list',
-            choices: departmentArray // TODO: Add this array later
+            choices: ['22']//departmentArray // TODO: Add a departmentArray later
         },
     ],
     addEmployeeChoose: [
@@ -47,13 +48,13 @@ questionObj = {
             name: 'questionAddEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: roleArray //TODO: Add this array later
+            choices: ['a']//roleArray //TODO: Add a roleArray array later
         },
         {
             name: 'questionAddEmployeeManager',
             message: "What is the employee's manager?",
             type: 'list',
-            choices: managerArray //TODO: Add this array later
+            choices: ['sa']//managerArray //TODO: Add managerArray array later
         },
     ],
     updateEmployeeRole: [
@@ -61,18 +62,24 @@ questionObj = {
             name: 'questionUpdateEmployee',
             message: "Which employee's role would you like to update?",
             type: 'list',
-            choices: employeeArray //TODO: Add this array later
+            choices: ['s']//employeeArray //TODO: Add employeeArray array later
         },
         {
             name: 'questionUpdateEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: roleArray //TODO: Add this array later
+            choices: ['some']//roleArray //TODO: Add roleArray later
         },
     ]
 }
+const { initQuestion, addDepartmentChoose, addRoleChoose, addEmployeeChoose, updateEmployeeRole } = questionObj;
 
 function init() {
     inquirer
-        .prompt()
+        .prompt(initQuestion)
+        .then((answer => {
+            console.log(answer)
+        }))
 }
+
+init();
