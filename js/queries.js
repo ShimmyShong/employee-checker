@@ -1,5 +1,7 @@
 const mysql = require('mysql2');
 
+let roleID = 0;
+
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -9,6 +11,8 @@ const db = mysql.createConnection(
     },
     console.log('Connected to the courses_db database.')
 )
+
+
 
 const selectAllEmployees = () => {
     db.query('SELECT * FROM employees', (err, rows) => {
@@ -42,7 +46,7 @@ const selectAllRoles = () => {
 
 const addDepartment = (departmentName) => {
     db.query(`
-    INSERT INTO departments (id, name)
+    INSERT INTO departments (name)
     VALUES ("${departmentName}")
     `,
         (err, res) => {
@@ -50,10 +54,74 @@ const addDepartment = (departmentName) => {
                 console.error(err);
                 return;
             }
-            console.log("Department Added!")
+            console.log(`${departmentName} Department Added!`)
         });
 };
 
-selectAllDepartments();
-addDepartment("New Department")
-selectAllDepartments();
+const addRole = (roleName, yearlySalary, departmentID) => {
+    db.query(`
+    INSERT INTO roles (title, salary, department_id)
+    VALUES ("${roleName}", ${yearlySalary}, ${departmentID})
+    `,
+        (err, res) => {
+            if (err) {
+                console.error(err)
+                return;
+            }
+            console.log(`Role ${roleName} with a salary of ${yearlySalary} added to ${departmentID}!`)
+        }
+
+    )
+}
+
+const addEmployee = (firstName, lastName, roleName) => {
+    db.query(`
+    SELECT id FROM roles WHERE title = ?`, roleName, // this is getting the role_id based on its name
+        (err, res) => {
+            if (err) {
+                console.error(err)
+                return;
+            }
+            roleID = res[0].id // must be res[0].id because the id is returned as an array
+            console.log(roleID)
+            db.query(`
+            INSERT INTO employees (first_name, last_name, role_id)
+            VALUES ('${firstName}', '${lastName}', ${roleID})
+            `,
+                (err, res) => {
+                    if (err) {
+                        console.error(err)
+                        return;
+                    }
+                    console.log(`${firstName} ${lastName} added as a ${roleName}!`) //TODO add this later
+                }
+            )
+        })
+}
+
+const updateEmployee = (roleName, employeeName) => {
+    db.query(`
+    SELECT id FROM roles WHERE title = ?`, roleName, // this is getting the role_id based on its name
+        (err, res) => {
+            if (err) {
+                console.error(err)
+                return;
+            }
+            roleID = res[0].id // must be res[0].id because the id is returned as an array
+            console.log(roleID)
+            db.query(`
+            UPDATE employees
+            SET role_id = "${roleName}"
+            WHERE `,
+                (err, res) => {
+                    if (err) {
+                        console.error(err)
+                        return;
+                    }
+                    console.log(`!`)
+                }
+
+            )
+        })
+
+}

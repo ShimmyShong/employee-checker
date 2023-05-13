@@ -1,25 +1,25 @@
-INSERT INTO departments(id, name)
+INSERT INTO departments(name)
 VALUES
-(1, "Engineering"),
-(2, "Finance"),
-(3, "Legal"),
-(4, "Sales");
+("Engineering"),
+("Finance"),
+("Legal"),
+("Sales");
 
-INSERT INTO roles (id, title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES
-(1, "Sales Lead", 23123, 4),
-(2, "Salesperson", 231, 4),
-(3, "Lead Engineer", 231133, 1),
-(4, "Software Engineer", 4123, 1),
-(5, "Account Manager", 43123, 2),
-(6, "Accountant", 12442, 2),
-(7, "Legal Team Lead", 231223133, 3),
-(8, "Lawyer", 243, 3);
+("Sales Lead", 23123, 4),
+("Salesperson", 231, 4),
+("Lead Engineer", 231133, 1),
+("Software Engineer", 4123, 1),
+("Account Manager", 43123, 2),
+("Accountant", 12442, 2),
+("Legal Team Lead", 231223133, 3),
+("Lawyer", 243, 3);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES
-(1, 'John', 'Doe', 1, NULL),
-(2, 'Jane', 'Doe', 2, 1),
-(3, 'Bob', 'Smith', 2, 1),
-(4, 'Alice', 'Johnson', 3, 2),
-(5, 'Mike', 'Brown', 3, 2);
+('John', 'Doe', 1, NULL),
+('Jane', 'Doe', 2, 1),
+('Bob', 'Smith', 2, 1),
+('Alice', 'Johnson', 3, 2),
+('Mike', 'Brown', 3, 2);
