@@ -99,7 +99,7 @@ const addEmployee = (firstName, lastName, roleName) => {
         })
 }
 
-const updateEmployee = (roleName, employeeName) => {
+const updateEmployee = (employeeName, roleName) => {
     db.query(`
     SELECT id FROM roles WHERE title = ?`, roleName, // this is getting the role_id based on its name
         (err, res) => {
@@ -111,17 +111,19 @@ const updateEmployee = (roleName, employeeName) => {
             console.log(roleID)
             db.query(`
             UPDATE employees
-            SET role_id = "${roleName}"
-            WHERE `,
+            SET role_id = "${roleID}"
+            WHERE first_name = "${employeeName}"
+            `,
                 (err, res) => {
                     if (err) {
                         console.error(err)
                         return;
                     }
-                    console.log(`!`)
+                    console.log(`${employeeName}'s role updated to ${roleName}!`)
                 }
-
             )
         })
-
 }
+
+// updateEmployee('hunter', 'Account Manager')
+selectAllEmployees();
