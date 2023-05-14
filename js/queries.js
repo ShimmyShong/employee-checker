@@ -93,7 +93,7 @@ const addEmployee = (firstName, lastName, roleName) => {
                         console.error(err)
                         return;
                     }
-                    console.log(`${firstName} ${lastName} added as a ${roleName}!`) //TODO add this later
+                    console.log(`${firstName} ${lastName} added as a ${roleName}!`)
                 }
             )
         })
