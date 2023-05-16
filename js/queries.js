@@ -12,10 +12,14 @@ const db = mysql.createConnection(
     console.log('Connected to the courses_db database.')
 )
 
-
-
 const selectAllEmployees = () => {
-    db.query('SELECT * FROM employees', (err, rows) => {
+    db.query(
+        `
+        SELECT employees.id, employees.first_name AS 'First Name', employees.last_name AS 'Last Name', roles.title AS 'Role', departments.name AS 'Department', roles.salary AS 'Salary'
+        FROM employees
+        LEFT JOIN roles ON employees.role_id = roles.id
+        LEFT JOIN departments ON roles.department_id = departments.id;
+        `, (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -35,7 +39,11 @@ const selectAllDepartments = () => {
 };
 
 const selectAllRoles = () => {
-    db.query('SELECT * FROM roles', (err, rows) => {
+    db.query(`
+    SELECT roles.id, roles.title AS 'Title', departments.name AS 'Department Name', roles.salary AS 'Salary'
+    FROM roles
+    JOIN departments ON roles.department_id = departments.id;
+    `, (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -126,4 +134,4 @@ const updateEmployee = (employeeName, roleName) => {
 }
 
 // updateEmployee('hunter', 'Account Manager')
-selectAllEmployees();
+selectAllRoles();

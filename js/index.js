@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const sql = require('mysql2');
+const mysql = require('mysql2');
 
 // this is an object that holds the questions that will be used for inquirer
 questionObj = {
