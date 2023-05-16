@@ -1,16 +1,41 @@
+class Queries {
+    constructor(db, roleID) {
+        this.db = mysql.createConnection(
+            {
+                host: 'localhost',
+                user: 'root',
+                password: 'nicetry',
+                database: 'employee_db'
+            },
+            console.log('Connected to the courses_db database.')
+        )
+        this.roleID = 0;
+    }
+
+
+}
+
+
 const mysql = require('mysql2');
 
 let roleID = 0;
 
-const db = mysql.createConnection(
-    {
-        host: 'localhost',
-        user: 'root',
-        password: 'nicetry',
-        database: 'employee_db'
-    },
-    console.log('Connected to the courses_db database.')
-)
+const initConnection = async () => {
+    try {
+        const db = await mysql.createConnection(
+            {
+                host: 'localhost',
+                user: 'root',
+                password: 'nicetry',
+                database: 'employee_db'
+            },
+            console.log('Connected to the courses_db database.')
+        )
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 
 const selectAllEmployees = () => {
     db.query(
@@ -42,7 +67,8 @@ const selectAllRoles = () => {
     db.query(`
     SELECT roles.id, roles.title AS 'Title', departments.name AS 'Department Name', roles.salary AS 'Salary'
     FROM roles
-    JOIN departments ON roles.department_id = departments.id;
+    JOIN departments ON roles.department_id = departments.id
+    ORDER BY roles.id ASC;
     `, (err, rows) => {
         if (err) {
             console.error(err);
@@ -132,6 +158,17 @@ const updateEmployee = (employeeName, roleName) => {
             )
         })
 }
-
-// updateEmployee('hunter', 'Account Manager')
+selectAllDepartments();
 selectAllRoles();
+selectAllEmployees();
+
+module.exports = {
+    initConnection,
+    selectAllEmployees,
+    selectAllDepartments,
+    selectAllRoles,
+    addDepartment,
+    addEmployee,
+    addRole,
+    updateEmployee
+}

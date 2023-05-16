@@ -1,5 +1,9 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const { selectAllEmployees, selectAllDepartments, selectAllRoles, addDepartment, addEmployee, updateEmployee } = require('./queries')
+
+let roleID = 0;
+let db;
 
 // this is an object that holds the questions that will be used for inquirer
 questionObj = {
@@ -72,13 +76,37 @@ questionObj = {
         },
     ]
 }
+
+// object destructuring to make life easier
 const { initQuestion, addDepartmentChoose, addRoleChoose, addEmployeeChoose, updateEmployeeRole } = questionObj;
 
+const initConnection = async () => {
+    try {
+        db = await mysql.createConnection(
+            {
+                host: 'localhost',
+                user: 'root',
+                password: 'nicetry',
+                database: 'employee_db'
+            },
+            console.log('Connected to the courses_db database.')
+        )
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 function init() {
+    initConnection();
+
     inquirer
         .prompt(initQuestion)
         .then((answer => {
-            console.log(answer)
+            switch (answer) {
+                case 'View All Employees':
+                    selectAllEmployees();
+                    break;
+            }
         }))
 }
 
