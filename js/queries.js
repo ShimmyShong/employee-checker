@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 class Queries {
-    constructor(db, roleID, departmentArray) {
+    constructor(db, roleID, departmentArray, employeeArray, roleArray) {
         this.db = mysql.createConnection(
             {
                 host: 'localhost',
@@ -11,6 +11,39 @@ class Queries {
             console.log('Connected to the courses_db database.')
         )
         this.roleID = 0;
+
+        this.db.query(`
+        SELECT * FROM departments;
+        `,
+            (err, res) => {
+                if (err) {
+                    console.error('error occured ' + err)
+                    return;
+                }
+                this.departmentArray = res.map(department => department.name); // mapping all the names to a new array
+            })
+
+        this.db.query(`
+        SELECT * FROM employees;
+        `,
+            (err, res) => {
+                if (err) {
+                    console.error('error occured ' + err)
+                    return;
+                }
+                this.employeeArray = res.map(employees => `${employees.first_name} ${employees.last_name}`); // mapping all the names to a new array
+            })
+
+        this.db.query(`
+        SELECT * FROM roles;
+        `,
+            (err, res) => {
+                if (err) {
+                    console.error('error occured ' + err)
+                    return;
+                }
+                this.roleArray = res.map(role => role.title); // mapping all the names to a new array
+            })
     }
 
     selectAllEmployees = () => {
@@ -133,23 +166,8 @@ class Queries {
                 );
             });
     };
-
-    createArrays = () => {
-        this.db.query(`
-        SELECT name FROM departments;
-        `,
-            (err, res) => {
-                if (err) {
-                    console.error('error occured ' + err)
-                    return;
-                }
-                const roleArray = res.map(department => department.name); // mapping all the names to a new array
-                console.log(roleArray)
-            })
-    }
 }
 
 const thisQuery = new Queries()
-thisQuery.createArrays();
 
 module.exports = { Queries };

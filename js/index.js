@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { Queries } = require('./queries')
+const thisQuery = new Queries();
 
 let roleID = 0;
 
@@ -33,7 +34,7 @@ questionObj = {
             name: 'questionAddRoleDepartment',
             message: 'Which department does the role belong to?',
             type: 'list',
-            choices: ['22']//departmentArray // TODO: Add a departmentArray later
+            choices: [thisQuery.departmentArray]//departmentArray // TODO: Add a departmentArray later
         },
     ],
     addEmployeeChoose: [
@@ -51,7 +52,7 @@ questionObj = {
             name: 'questionAddEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: ['a']//roleArray //TODO: Add a roleArray array later
+            choices: [thisQuery.roleArray]//roleArray //TODO: Add a roleArray array later
         },
         {
             name: 'questionAddEmployeeManager',
@@ -65,24 +66,19 @@ questionObj = {
             name: 'questionUpdateEmployee',
             message: "Which employee's role would you like to update?",
             type: 'list',
-            choices: ['s']//employeeArray //TODO: Add employeeArray array later
+            choices: [thisQuery.employeeArray]//employeeArray //TODO: Add employeeArray array later
         },
         {
             name: 'questionUpdateEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: ['some']//roleArray //TODO: Add roleArray later
+            choices: [thisQuery.roleArray]//roleArray //TODO: Add roleArray later
         },
     ]
 }
 
 // object destructuring to make life easier
 const { initQuestion, addDepartmentChoose, addRoleChoose, addEmployeeChoose, updateEmployeeRole } = questionObj;
-const thisQuery = new Queries();
-
-const createArrays = () => {
-
-}
 
 const init = async () => {
     await inquirer
