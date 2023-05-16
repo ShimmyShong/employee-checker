@@ -1,9 +1,8 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const { selectAllEmployees, selectAllDepartments, selectAllRoles, addDepartment, addEmployee, updateEmployee } = require('./queries')
+const { Queries } = require('./queries')
 
 let roleID = 0;
-let db;
 
 // this is an object that holds the questions that will be used for inquirer
 questionObj = {
@@ -79,33 +78,28 @@ questionObj = {
 
 // object destructuring to make life easier
 const { initQuestion, addDepartmentChoose, addRoleChoose, addEmployeeChoose, updateEmployeeRole } = questionObj;
+const thisQuery = new Queries();
 
-const initConnection = async () => {
-    try {
-        db = await mysql.createConnection(
-            {
-                host: 'localhost',
-                user: 'root',
-                password: 'nicetry',
-                database: 'employee_db'
-            },
-            console.log('Connected to the courses_db database.')
-        )
-    } catch (err) {
-        console.error(err)
-    }
+const createArrays = () => {
+
 }
 
-function init() {
-    initConnection();
-
-    inquirer
+const init = async () => {
+    await inquirer
         .prompt(initQuestion)
         .then((answer => {
-            switch (answer) {
+            switch (answer.questionInit) {
                 case 'View All Employees':
-                    selectAllEmployees();
+                    thisQuery.selectAllEmployees();
                     break;
+                case 'Add Employee':
+                    inquirer
+                        .prompt(addEmployeeChoose)
+                        .then((answer => {
+                            thisQuery.addEmployee(answer.questionAddEmployeeFirstName, questionAddEmployeeLastName, answer.questionAddEmployeeRole)
+                        }))
+                default:
+                    console.log('Something went wrong')
             }
         }))
 }
