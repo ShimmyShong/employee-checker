@@ -81,23 +81,28 @@ questionObj = {
 const { initQuestion, addDepartmentChoose, addRoleChoose, addEmployeeChoose, updateEmployeeRole } = questionObj;
 
 const init = async () => {
-    await inquirer
-        .prompt(initQuestion)
-        .then((answer => {
-            switch (answer.questionInit) {
-                case 'View All Employees':
-                    thisQuery.selectAllEmployees();
-                    break;
-                case 'Add Employee':
-                    inquirer
-                        .prompt(addEmployeeChoose)
-                        .then((answer => {
-                            thisQuery.addEmployee(answer.questionAddEmployeeFirstName, questionAddEmployeeLastName, answer.questionAddEmployeeRole)
-                        }))
-                default:
-                    console.log('Something went wrong')
-            }
-        }))
-}
+    const answer = await inquirer.prompt(initQuestion);
+    switch (answer.questionInit) {
+        case 'View All Employees':
+            thisQuery.selectAllEmployees();
+            break;
+        case 'View All Departments':
+            thisQuery.selectAllDepartments();
+            break;
+        case 'Add Employee':
+            const addEmployeeAnswer = await inquirer.prompt(addEmployeeChoose);
+            thisQuery.addEmployee(addEmployeeAnswer.questionAddEmployeeFirstName, addEmployeeAnswer.questionAddEmployeeLastName, addEmployeeAnswer.questionAddEmployeeRole);
+            break;
+        case 'Add Department':
+            const addDepartmentAnswer = await inquirer.prompt(addDepartmentChoose);
+            thisQuery.addDepartment(addDepartmentAnswer.questionAddDepartment);
+            break;
+        case 'Add Role':
+            const addRoleAnswer = await inquirer.prompt(addRoleChoose);
+
+        default:
+            console.log('Something went wrong');
+    }
+};
 
 init();
