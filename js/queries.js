@@ -1,4 +1,7 @@
 const mysql = require('mysql2');
+const { prompt } = require('inquirer');
+
+
 class Queries {
     constructor(db, roleID, departmentArray, employeeArray, roleArray) {
         this.db = mysql.createConnection(
@@ -11,24 +14,31 @@ class Queries {
             console.log('Connected to the courses_db database.')
         )
         this.roleID = 0;
+        this.departmentArray;
+        this.employeeArray;
+        this.roleArray;
+    }
 
+    initArrays = () => {
+        console.log('initializing arrays')
         this.db.query(`
         SELECT * FROM departments;
         `,
-            (err, res) => {
+            function (err, res) {
                 if (err) {
-                    console.error('error occured ' + err)
+                    console.error('error occurred ' + err)
                     return;
                 }
-                this.departmentArray = res.map(department => department.name); // mapping all the names to a new array
+                this.departmentArray = res.map(department => department.name) // mapping all the names to a new array
+                console.log(this.departmentArray)
             })
 
         this.db.query(`
         SELECT * FROM employees;
         `,
-            (err, res) => {
+            function (err, res) {
                 if (err) {
-                    console.error('error occured ' + err)
+                    console.error('error occurred ' + err)
                     return;
                 }
                 this.employeeArray = res.map(employees => `${employees.first_name} ${employees.last_name}`); // mapping all the names to a new array
@@ -37,9 +47,9 @@ class Queries {
         this.db.query(`
         SELECT * FROM roles;
         `,
-            (err, res) => {
+            function (err, res) {
                 if (err) {
-                    console.error('error occured ' + err)
+                    console.error('error occurred ' + err)
                     return;
                 }
                 this.roleArray = res.map(role => role.title); // mapping all the names to a new array
@@ -116,29 +126,52 @@ class Queries {
         );
     };
 
-    addEmployee = (firstName, lastName, roleName) => {
-        this.db.query(`
-    SELECT id FROM roles WHERE title = ?`, roleName, // this is getting the role_id based on its name
-            (err, res) => {
-                if (err) {
-                    console.error(err)
-                    return;
-                }
-                roleID = res[0].id // must be res[0].id because the id is returned as an array
-                console.log(roleID)
-                db.query(`
-            INSERT INTO employees (first_name, last_name, role_id)
-            VALUES ('${firstName}', '${lastName}', ${roleID})
-            `,
-                    (err, res) => {
-                        if (err) {
-                            console.error(err)
-                            return;
-                        }
-                        console.log(`${firstName} ${lastName} added as a ${roleName}!`)
-                    }
-                );
-            });
+    addEmployee = async () => {
+        try {
+            const [roleData] = await this.db
+                .promise().query(`SELECT id, title FROM roles`);
+
+            const [managerData] = await this.db
+                .promise().query(`SELECT id, first_name, last_name FROM employees`);
+
+            const newEmployeeData = await prompt([
+                {
+                    name: 'first_name',
+                    message: "What is the employee's first name?",
+                    type: 'input'
+                },
+                {
+                    name: 'last_name',
+                    message: "What is the employee's last name?",
+                    type: 'input'
+                },
+                {
+                    name: 'role_id',
+                    message: "What is the employee's role?",
+                    type: 'list',
+                    choices: roleData.map(({ id, title }) => ({
+                        name: title,
+                        value: id
+                    }))
+                },
+                {
+                    name: 'manager_id',
+                    message: "What is the employee's manager?",
+                    type: 'list',
+                    choices: managerData.map(({ id, first_name, last_name }) => ({
+                        name: `${first_name} ${last_name}`,
+                        value: id
+                    }))
+                },
+            ]);
+
+            const data = await this.db.promise()
+                .query(`INSERT INTO employees SET ?`, newEmployeeData);
+
+            console.log(`\nEmployee Added\n`);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     updateEmployee = (employeeName, roleName) => {
@@ -168,6 +201,7 @@ class Queries {
     };
 }
 
-const thisQuery = new Queries()
+// const Q = new Queries;
+// Q.initArrays();
 
 module.exports = { Queries };

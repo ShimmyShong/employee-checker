@@ -1,10 +1,10 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { Queries } = require('./queries')
-const thisQuery = new Queries();
 
 let roleID = 0;
-
+let thisQuery = new Queries;
+// thisQuery.initArrays();
 // this is an object that holds the questions that will be used for inquirer
 questionObj = {
     initQuestion:
@@ -34,7 +34,7 @@ questionObj = {
             name: 'questionAddRoleDepartment',
             message: 'Which department does the role belong to?',
             type: 'list',
-            choices: [thisQuery.departmentArray]//departmentArray // TODO: Add a departmentArray later
+            choices: thisQuery.departmentArray//departmentArray // TODO: Add a departmentArray later
         },
     ],
     addEmployeeChoose: [
@@ -52,7 +52,7 @@ questionObj = {
             name: 'questionAddEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: [thisQuery.roleArray]//roleArray //TODO: Add a roleArray array later
+            choices: thisQuery.roleArray//roleArray //TODO: Add a roleArray array later
         },
         {
             name: 'questionAddEmployeeManager',
@@ -66,13 +66,13 @@ questionObj = {
             name: 'questionUpdateEmployee',
             message: "Which employee's role would you like to update?",
             type: 'list',
-            choices: [thisQuery.employeeArray]//employeeArray //TODO: Add employeeArray array later
+            choices: thisQuery.employeeArray//employeeArray //TODO: Add employeeArray array later
         },
         {
             name: 'questionUpdateEmployeeRole',
             message: "What is the employee's role?",
             type: 'list',
-            choices: [thisQuery.roleArray]//roleArray //TODO: Add roleArray later
+            choices: thisQuery.roleArray//roleArray //TODO: Add roleArray later
         },
     ]
 }
@@ -84,14 +84,14 @@ const init = async () => {
     const answer = await inquirer.prompt(initQuestion);
     switch (answer.questionInit) {
         case 'View All Employees':
-            thisQuery.selectAllEmployees();
+            thisQuery.selectAllEmployees()
             break;
         case 'View All Departments':
             thisQuery.selectAllDepartments();
             break;
         case 'Add Employee':
-            const addEmployeeAnswer = await inquirer.prompt(addEmployeeChoose);
-            thisQuery.addEmployee(addEmployeeAnswer.questionAddEmployeeFirstName, addEmployeeAnswer.questionAddEmployeeLastName, addEmployeeAnswer.questionAddEmployeeRole);
+            await thisQuery.addEmployee();
+            init();
             break;
         case 'Add Department':
             const addDepartmentAnswer = await inquirer.prompt(addDepartmentChoose);
@@ -99,7 +99,8 @@ const init = async () => {
             break;
         case 'Add Role':
             const addRoleAnswer = await inquirer.prompt(addRoleChoose);
-
+            thisQuery.addRole(addRoleAnswer.questionAddRole, addRoleAnswer.questionAddSalary, addRoleAnswer.questionAddRoleDepartment)
+            break;
         default:
             console.log('Something went wrong');
     }
