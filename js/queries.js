@@ -111,19 +111,51 @@ class Queries {
             });
     };
 
-    addRole = (roleName, yearlySalary, departmentID) => {
-        this.db.query(`
-    INSERT INTO roles (title, salary, department_id)
-    VALUES ("${roleName}", ${yearlySalary}, ${departmentID})
-    `,
-            (err, res) => {
-                if (err) {
-                    console.error(err)
-                    return;
-                }
-                console.log(`Role ${roleName} with a salary of ${yearlySalary} added to ${departmentID}!`)
-            }
-        );
+    addRole = async () => {
+        //     this.db.query(`
+        // INSERT INTO roles (title, salary, department_id)
+        // VALUES ("${roleName}", ${yearlySalary}, ${departmentID})
+        // `,
+        //         (err, res) => {
+        //             if (err) {
+        //                 console.error(err)
+        //                 return;
+        //             }
+        //             console.log(`Role ${roleName} with a salary of ${yearlySalary} added to ${departmentID}!`)
+        //         }
+        //     );
+
+        const [departmentData] = await this.db
+            .promise().query(`SELECT id, name FROM departments`);
+
+        try {
+            const newRoleData = await prompt([
+                {
+                    name: 'title',
+                    message: 'What is the name of the role?',
+                    type: 'input'
+                },
+                {
+                    name: 'salary',
+                    message: 'What is the yearly salary of the role?',
+                    type: 'input'
+                },
+                {
+                    name: 'department_id',
+                    message: 'Which department does the role belong to?',
+                    type: 'list',
+                    choices: departmentData.map(({ id, name }) => ({
+                        name: `${name}`,
+                        value: id
+                    }))
+                },
+            ])
+            const data = await this.db.promise()
+                .query(`INSERT INTO roles SET ?`, newRoleData);
+            console.log(`\nRole Added\n`);
+        } catch (err) {
+            console.error(err)
+        }
     };
 
     addEmployee = async () => {

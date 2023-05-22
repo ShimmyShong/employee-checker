@@ -89,6 +89,9 @@ const init = async () => {
         case 'View All Departments':
             thisQuery.selectAllDepartments();
             break;
+        case 'View All Roles':
+            thisQuery.selectAllRoles();
+            break;
         case 'Add Employee':
             await thisQuery.addEmployee();
             init();
@@ -98,8 +101,7 @@ const init = async () => {
             thisQuery.addDepartment(addDepartmentAnswer.questionAddDepartment);
             break;
         case 'Add Role':
-            const addRoleAnswer = await inquirer.prompt(addRoleChoose);
-            thisQuery.addRole(addRoleAnswer.questionAddRole, addRoleAnswer.questionAddSalary, addRoleAnswer.questionAddRoleDepartment)
+            await thisQuery.addRole();
             break;
         default:
             console.log('Something went wrong');
