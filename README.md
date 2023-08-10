@@ -1,6 +1,10 @@
 # Employee Checker [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![Website Screenshot](client\public\chrome_kaD7vwuKKw.png)
+
+
+https://github.com/ShimmyShong/employee-checker/assets/123122824/11c3ee4e-ef5b-4eca-9d69-273451b17bb7
+
+
 
 ## Description
 This is an employee tracker that allows for you to see all of your employees and any relevant information about them, edit that information, and save it. 
